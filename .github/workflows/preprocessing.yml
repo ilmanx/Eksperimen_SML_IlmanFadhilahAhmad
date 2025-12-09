@@ -30,6 +30,14 @@ jobs:
       run: |
         python preprocessing/automate_IlmanFadhilahAhmad.py
 
+    - name: Commit processed dataset
+      run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+        git add preprocessing/dataset_preprocessing
+        git commit -m "Add preprocessed dataset"
+        git push origin main
+
     - name: Upload Generated Preprocessed Dataset
       uses: actions/upload-artifact@v4
       with:
