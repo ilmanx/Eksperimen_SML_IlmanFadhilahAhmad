@@ -32,8 +32,8 @@ jobs:
 
     - name: Commit processed dataset
       run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
+        git config --global user.email "ilmanfadhilah0136@gmail.com"
+        git config --global user.name "ilmanx"
         git add preprocessing/dataset_preprocessing
         git commit -m "Add preprocessed dataset"
         git push origin main
