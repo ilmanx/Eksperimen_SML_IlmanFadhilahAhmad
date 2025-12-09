@@ -37,6 +37,8 @@ jobs:
         git add preprocessing/dataset_preprocessing
         git commit -m "Add preprocessed dataset"
         git push origin main
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
 
     - name: Upload Generated Preprocessed Dataset
       uses: actions/upload-artifact@v4
