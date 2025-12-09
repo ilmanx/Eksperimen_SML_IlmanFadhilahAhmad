@@ -31,7 +31,7 @@ jobs:
         python preprocessing/automate_IlmanFadhilahAhmad.py
 
     - name: Upload Generated Preprocessed Dataset
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: breast-cancer-preprocessed-data
         path: preprocessing/namadataset_preprocessing/
