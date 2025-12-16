@@ -22,7 +22,7 @@ dagshub.init(
 
 mlflow.set_experiment("Breast_Cancer_Classification")
 
-# LOAD DATA
+# load data
 train_df = pd.read_csv("../preprocessing/train_data.csv")
 test_df = pd.read_csv("../preprocessing/test_data.csv")
 
@@ -31,7 +31,7 @@ y_train = train_df.iloc[:, -1]
 X_test = test_df.iloc[:, :-1]
 y_test = test_df.iloc[:, -1]
 
-# HYPERPARAMETER TUNING
+# hypter tuning
 param_grid = [
     {"C": 0.1},
     {"C": 1.0},
@@ -50,14 +50,13 @@ for params in param_grid:
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
-
         # Metrics
         acc = accuracy_score(y_test, y_pred)
         prec = precision_score(y_test, y_pred)
         rec = recall_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred)
 
-        # Manual logging 
+        # 🔹 Manual logging
         mlflow.log_param("C", params["C"])
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("precision", prec)
@@ -80,7 +79,7 @@ for params in param_grid:
             f.write(report)
         mlflow.log_artifact("classification_report.txt")
 
-        #  Metrics Summary
+        # Metrics Summary (extra, optional tapi aman)
         metrics_summary = {
             "accuracy": acc,
             "precision": prec,
