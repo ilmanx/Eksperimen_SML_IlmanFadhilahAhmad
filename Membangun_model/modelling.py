@@ -13,27 +13,21 @@ from sklearn.metrics import accuracy_score
 
 
 def main():
-    # ===============================
-    # 1. Load preprocessed dataset
-    # ===============================
+    # 1. Load dataset
     train_path = "../preprocessing/train_data.csv"
     test_path = "../preprocessing/test_data.csv"
 
     train_df = pd.read_csv(train_path)
     test_df = pd.read_csv(test_path)
 
-    # ===============================
-    # 2. Split feature & target
-    # ===============================
+    # Split feature & target
     X_train = train_df.drop(columns=["diagnosis"])
     y_train = train_df["diagnosis"]
 
     X_test = test_df.drop(columns=["diagnosis"])
     y_test = test_df["diagnosis"]
 
-    # ===============================
     # 3. Setup MLflow (local)
-    # ===============================
     mlflow.set_experiment("Breast_Cancer_Classification")
     mlflow.sklearn.autolog()
 

@@ -3,56 +3,53 @@ import mlflow
 import mlflow.sklearn
 import dagshub
 import matplotlib.pyplot as plt
+import json
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score,
-    f1_score, confusion_matrix, classification_report
+    accuracy_score, precision_score,
+    recall_score, f1_score,
+    confusion_matrix, classification_report
 )
 import warnings
 warnings.filterwarnings("ignore")
 
-# ===============================
-# DAGSHUB INIT (WAJIB ADVANCED)
-# ===============================
+# DAGSHUB
 dagshub.init(
-    repo_owner="ilmanx",          # GANTI dengan username DagsHub
-    repo_name="breast-cancer-mlflow",  # GANTI dengan nama repo
+    repo_owner="ilmanx",
+    repo_name="Eksperimen_SML_IlmanFadhilahAhmad",
     mlflow=True
 )
 
-mlflow.set_experiment("Breast_Cancer_Classification_Advanced")
+mlflow.set_experiment("Breast_Cancer_Classification")
 
-# ===============================
-# Load Dataset
-# ===============================
-train_df = pd.read_csv("../preprocessing/dataset_preprocessing/train_data.csv")
-test_df = pd.read_csv("../preprocessing/dataset_preprocessing/test_data.csv")
+# LOAD DATA
+train_df = pd.read_csv("../preprocessing/train_data.csv")
+test_df = pd.read_csv("../preprocessing/test_data.csv")
 
 X_train = train_df.iloc[:, :-1]
 y_train = train_df.iloc[:, -1]
 X_test = test_df.iloc[:, :-1]
 y_test = test_df.iloc[:, -1]
 
-# ===============================
-# Hyperparameter Tuning
-# ===============================
-params_list = [
+# HYPERPARAMETER TUNING
+param_grid = [
     {"C": 0.1},
     {"C": 1.0},
     {"C": 10.0}
 ]
 
-for params in params_list:
+for params in param_grid:
     with mlflow.start_run(run_name=f"LogReg_C_{params['C']}"):
 
+        # Model
         model = LogisticRegression(
             C=params["C"],
             solver="liblinear",
             random_state=42
         )
-
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
+
 
         # Metrics
         acc = accuracy_score(y_test, y_pred)
@@ -60,18 +57,14 @@ for params in params_list:
         rec = recall_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred)
 
-        # Log params & metrics
+        # Manual logging 
         mlflow.log_param("C", params["C"])
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("precision", prec)
         mlflow.log_metric("recall", rec)
         mlflow.log_metric("f1_score", f1)
 
-        # ===============================
-        # Artefak Tambahan (WAJIB)
-        # ===============================
-
-        # 1. Confusion Matrix
+        # Confusion Matrix
         cm = confusion_matrix(y_test, y_pred)
         plt.figure()
         plt.imshow(cm)
@@ -81,15 +74,24 @@ for params in params_list:
         plt.close()
         mlflow.log_artifact("confusion_matrix.png")
 
-        # 2. Classification Report
+        # Classification Report
         report = classification_report(y_test, y_pred)
         with open("classification_report.txt", "w") as f:
             f.write(report)
         mlflow.log_artifact("classification_report.txt")
 
-        # Log model
-        mlflow.sklearn.log_model(model, "model")
+        #  Metrics Summary
+        metrics_summary = {
+            "accuracy": acc,
+            "precision": prec,
+            "recall": rec,
+            "f1_score": f1,
+            "C": params["C"]
+        }
+        with open("metrics_summary.json", "w") as f:
+            json.dump(metrics_summary, f, indent=4)
+        mlflow.log_artifact("metrics_summary.json")
+
+        mlflow.sklearn.log_model(model, artifact_path="model")
 
         print(f"C={params['C']} | Accuracy={acc:.4f}")
-
-print("ADVANCED TRAINING SELESAI (DagsHub)")
