@@ -3,9 +3,7 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# ===============================
-# Fungsi untuk load dataset
-# ===============================
+# load dataset
 def load_data(input_path="dataset_raw/Data_Breast_Cancer_raw.csv"):
     """
     Load dataset dari path yang diberikan.
@@ -15,9 +13,7 @@ def load_data(input_path="dataset_raw/Data_Breast_Cancer_raw.csv"):
     df = pd.read_csv(input_path)
     return df
 
-# ===============================
-# Fungsi untuk preprocessing
-# ===============================
+# preprocessing
 def preprocess_data(df):
     """
     Drop kolom yang tidak diperlukan dan encode target variable.
@@ -26,9 +22,7 @@ def preprocess_data(df):
     df["diagnosis"] = df["diagnosis"].map({"B": 0, "M": 1})
     return df
 
-# ===============================
-# Fungsi untuk split dan scaling
-# ===============================
+# split dan scaling
 def split_and_scale(df, test_size=0.2, random_state=42):
     """
     Split dataset menjadi train/test dan lakukan scaling.
@@ -46,12 +40,10 @@ def split_and_scale(df, test_size=0.2, random_state=42):
 
     return X_train_scaled, X_test_scaled, y_train, y_test, X.columns
 
-# ===============================
-# Fungsi untuk menyimpan dataset
-# ===============================
+# menyimpan dataset
 def save_data(X_train_scaled, X_test_scaled, y_train, y_test, columns, output_dir="preprocessing/dataset_preprocessing"):
     """
-    Simpan dataset yang sudah di-preprocess ke folder output.
+    Simpan dataset
     """
     os.makedirs(output_dir, exist_ok=True)
 
@@ -69,9 +61,7 @@ def save_data(X_train_scaled, X_test_scaled, y_train, y_test, columns, output_di
     test_data.to_csv(f"{output_dir}/test_data.csv", index=False)
     print(f" Dataset preprocessing berhasil disimpan di folder: {output_dir}")
 
-# ===============================
-# Fungsi utama untuk run preprocessing
-# ===============================
+# run preprocessing
 def run_preprocessing(input_path="dataset_raw/Data_Breast_Cancer_raw.csv",
                       output_dir="preprocessing/dataset_preprocessing"):
 
