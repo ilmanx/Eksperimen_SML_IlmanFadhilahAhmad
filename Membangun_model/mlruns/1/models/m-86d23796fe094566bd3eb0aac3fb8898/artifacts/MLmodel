@@ -1,0 +1,22 @@
+artifact_path: file:C:/Users/user/Eksperimen_SML_IlmanFadhilahAhmad/Membangun_model/mlruns/1/models/m-86d23796fe094566bd3eb0aac3fb8898/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.7
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+mlflow_version: 3.7.0
+model_id: m-86d23796fe094566bd3eb0aac3fb8898
+model_size_bytes: 1562
+model_uuid: m-86d23796fe094566bd3eb0aac3fb8898
+prompts: null
+run_id: 2a041cd3bbd4482bbc0c189b8cd24509
+utc_time_created: '2025-12-17 00:46:46.494370'

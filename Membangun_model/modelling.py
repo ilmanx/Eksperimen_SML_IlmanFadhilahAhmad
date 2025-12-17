@@ -1,52 +1,42 @@
-"""
-Modelling - Kriteria 2 (Basic)
-Training Machine Learning menggunakan MLflow Autolog
-Dataset: Breast Cancer (Preprocessed)
-"""
-
 import pandas as pd
 import mlflow
 import mlflow.sklearn
-
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
+import warnings
+warnings.filterwarnings("ignore")
 
+# MLflow setup
+mlflow.set_experiment("Breast_Cancer_Classification")
 
-def main():
-    # 1. Load dataset
-    train_path = "../preprocessing/train_data.csv"
-    test_path = "../preprocessing/test_data.csv"
+# autolog
+mlflow.sklearn.autolog()
 
-    train_df = pd.read_csv(train_path)
-    test_df = pd.read_csv(test_path)
+# Load data
+train_df = pd.read_csv("../preprocessing/train_data.csv")
+test_df = pd.read_csv("../preprocessing/test_data.csv")
 
-    # Split feature & target
-    X_train = train_df.drop(columns=["diagnosis"])
-    y_train = train_df["diagnosis"]
+X_train = train_df.iloc[:, :-1]
+y_train = train_df.iloc[:, -1]
+X_test = test_df.iloc[:, :-1]
+y_test = test_df.iloc[:, -1]
 
-    X_test = test_df.drop(columns=["diagnosis"])
-    y_test = test_df["diagnosis"]
+with mlflow.start_run(run_name="LogisticRegression_Basic"):
 
-    # 3. Setup MLflow (local)
-    mlflow.set_experiment("Breast_Cancer_Classification")
-    mlflow.sklearn.autolog()
+    model = LogisticRegression(
+        C=1.0,
+        solver="liblinear",
+        random_state=42
+    )
+    model.fit(X_train, y_train)
 
-    # ===============================
-    # 4. Train model
-    # ===============================
-    with mlflow.start_run(run_name="LogisticRegression"):
-        model = LogisticRegression(max_iter=1000, random_state=42)
-        model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
 
-        # ===============================
-        # 5. Evaluation
-        # ===============================
-        y_pred = model.predict(X_test)
-        acc = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+    with open("estimator.html", "w") as f:
+        f.write(f"<pre>{report}</pre>")
 
-        print("Model training selesai")
-        print(f"Accuracy: {acc:.4f}")
+    mlflow.log_artifact("estimator.html")
 
-
-if __name__ == "__main__":
-    main()
+    print(f"Training selesai | Accuracy: {acc:.4f}")
